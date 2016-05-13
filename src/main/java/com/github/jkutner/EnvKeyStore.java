@@ -7,9 +7,13 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * This class is used to create a java.security.KeyStore from environment variables.
@@ -87,24 +91,30 @@ public class EnvKeyStore {
   }
 
   public InputStream toInputStream() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    return new ByteArrayInputStream(toBytes());
+  }
+
+  public byte[] toBytes() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     this.store(bos);
     bos.close();
-
-    return new ByteArrayInputStream(bos.toByteArray());
+    return bos.toByteArray();
   }
 
   public void store(OutputStream out) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
     this.keystore.store(out, password.toCharArray());
   }
 
-//  public void store(Path path) {
-//
-//  }
-//
-//  public void storeTemp() {
-//
-//  }
+  public void store(Path path) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    Files.write(path, toBytes());
+  }
+
+  public void asFile(Consumer<File> c) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
+    File temp = File.createTempFile("env-keystore", ".jks");
+    store(temp.toPath());
+    c.accept(temp);
+    Files.delete(temp.toPath());
+  }
 
   public static KeyStore createKeyStore(final Reader keyReader, final Reader certReader, final String password)
       throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException {

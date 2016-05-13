@@ -1,6 +1,8 @@
 package com.github.jkutner;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -82,5 +84,18 @@ public class EnvKeyStoreTest {
     assert eks.keyStore() != null : "KeyStore is null";
 
     assert eks.keyStore().size() == 1 : "KeyStore does not contain 1 entry (" + eks.keyStore().size() + ")";
+
+    eks.asFile( f -> {
+      assert f.exists() : "Temp KeyStore file does not exist!";
+
+      try (FileInputStream in = new FileInputStream(f)) {
+        KeyStore ks = KeyStore.getInstance(eks.keyStore().getType());
+        ks.load(in, eks.password().toCharArray());
+
+        assert ks.size() == 1 : "KeyStore file is the wrong size! (" + ks.size() + ")";
+      } catch (Exception e) {
+        assert false : e.getMessage();
+      }
+    });
   }
 }
