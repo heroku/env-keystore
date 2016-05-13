@@ -5,7 +5,7 @@
   <packaging>jar</packaging>
   <version>0.1.0</version>
   <name>env-keystore</name>
-  <description>Keystore and Truststore from environment variables</description>
+  <description>Creates KeyStore and TrustStore from environment variables</description>
 
   <dependencies>
     <dependency>
@@ -14,21 +14,4 @@
       <version>1.54</version>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>2.4</version>
-        <executions>
-          <execution>
-            <id>copy-dependencies</id>
-            <phase>package</phase>
-            <goals><goal>copy-dependencies</goal></goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>
