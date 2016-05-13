@@ -16,7 +16,7 @@ Include this library in your application as a Maven depenency:
 </dependency>
 ```
 
-### Create a TrustStore
+### Creating a TrustStore
 
 Creating a TrustStore requires that the certificate PEM be set as an environment variable.
 You pass that environment variable name to the `EnvKeyStore.create` method:
