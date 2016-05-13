@@ -118,8 +118,6 @@ public class EnvKeyStore {
 
   public static KeyStore createKeyStore(final Reader keyReader, final Reader certReader, final String password)
       throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
-
-    // Get the private key
     PEMParser pem = new PEMParser(keyReader);
     PEMKeyPair pemKeyPair = ((PEMKeyPair) pem.readObject());
     JcaPEMKeyConverter jcaPEMKeyConverter = new JcaPEMKeyConverter();
@@ -130,7 +128,6 @@ public class EnvKeyStore {
 
     X509Certificate certificate = parseCert(certReader);
 
-    // Put them into a PKCS12 keystore
     KeyStore ks = KeyStore.getInstance("PKCS12");
     ks.load(null);
     ks.setKeyEntry("alias", key, password.toCharArray(), new X509Certificate[]{certificate});
