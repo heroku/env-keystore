@@ -64,6 +64,8 @@ public class EnvKeyStore {
 
   private KeyStore keystore;
 
+  private static final String DEFAULT_TYPE = "PKCS12";
+
   EnvKeyStore(String key, String cert, String password)
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
     this.password = password;
@@ -90,6 +92,10 @@ public class EnvKeyStore {
     return this.keystore;
   }
 
+  public String getType() {
+    return DEFAULT_TYPE;
+  }
+
   public InputStream toInputStream() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
     return new ByteArrayInputStream(toBytes());
   }
@@ -109,9 +115,14 @@ public class EnvKeyStore {
     Files.write(path, toBytes());
   }
 
-  public void asFile(Consumer<File> c) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
-    File temp = File.createTempFile("env-keystore", ".jks");
+  public File storeTemp() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
+    File temp = File.createTempFile("env-keystore", getType().toLowerCase());
     store(temp.toPath());
+    return temp;
+  }
+
+  public void asFile(Consumer<File> c) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
+    File temp = storeTemp();
     c.accept(temp);
     Files.delete(temp.toPath());
   }
@@ -128,7 +139,7 @@ public class EnvKeyStore {
 
     X509Certificate certificate = parseCert(certReader);
 
-    KeyStore ks = KeyStore.getInstance("PKCS12");
+    KeyStore ks = KeyStore.getInstance(DEFAULT_TYPE);
     ks.load(null);
     ks.setKeyEntry("alias", key, password.toCharArray(), new X509Certificate[]{certificate});
     return ks;
@@ -138,7 +149,7 @@ public class EnvKeyStore {
       throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
     X509Certificate certificate = parseCert(certReader);
 
-    KeyStore ks = KeyStore.getInstance("PKCS12");
+    KeyStore ks = KeyStore.getInstance(DEFAULT_TYPE);
     ks.load(null);
     ks.setCertificateEntry("alias", certificate);
     return ks;
