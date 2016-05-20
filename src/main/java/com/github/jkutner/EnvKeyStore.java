@@ -92,7 +92,7 @@ public class EnvKeyStore {
     return this.keystore;
   }
 
-  public String getType() {
+  public String type() {
     return DEFAULT_TYPE;
   }
 
@@ -116,7 +116,7 @@ public class EnvKeyStore {
   }
 
   public File storeTemp() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
-    File temp = File.createTempFile("env-keystore", getType().toLowerCase());
+    File temp = File.createTempFile("env-keystore", type().toLowerCase());
     store(temp.toPath());
     return temp;
   }
