@@ -66,9 +66,9 @@ public class EnvKeyStoreTest {
   public void testTrustStore()
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 
-    EnvKeyStore eks = new EnvKeyStore(CERT);
+    EnvKeyStore eks = new EnvKeyStore(CERT, "password");
 
-    assert eks.password() == null : "Password for trust cert was not null";
+    assert "password".equals(eks.password()) : "Password for trust cert was not set";
 
     assert eks.keyStore() != null : "TrustStore is null";
 

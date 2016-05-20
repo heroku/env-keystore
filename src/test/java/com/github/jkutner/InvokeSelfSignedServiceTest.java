@@ -41,7 +41,7 @@ public class InvokeSelfSignedServiceTest {
   private void enableTrustStore(String trustedCert)
       throws NoSuchAlgorithmException, KeyStoreException, IOException, CertificateException, KeyManagementException {
 
-    KeyStore ts = new EnvKeyStore(trustedCert).keyStore();
+    KeyStore ts = new EnvKeyStore(trustedCert, "password").keyStore();
 
     String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
     TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
