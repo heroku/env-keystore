@@ -7,6 +7,7 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.*;
@@ -47,16 +48,56 @@ public class EnvKeyStore {
    * Create a TrustStore representation from an environment variable.
    *
    * @param trustEnvVar The environment variable name of the certificate
+   * @param passwordEnvVar The environment variable name of the password
    * @return an EnvKeyStore with a loaded TrustStore
    * @throws CertificateException
    * @throws NoSuchAlgorithmException
    * @throws KeyStoreException
    * @throws IOException
    */
-  public static EnvKeyStore create(final String trustEnvVar)
+  public static EnvKeyStore create(final String trustEnvVar, final String passwordEnvVar)
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
     return new EnvKeyStore(
-        System.getenv(trustEnvVar)
+        System.getenv(trustEnvVar),
+        System.getenv(passwordEnvVar)
+    );
+  }
+
+  /**
+   * Create a KeyStore representation from environment variables.
+   *
+   * @param keyEnvVar The environment variable name of the key
+   * @param certEnvVar The environment variable name of the certificate
+   * @return an EnvKeyStore with a loaded KeyStore
+   * @throws CertificateException
+   * @throws NoSuchAlgorithmException
+   * @throws KeyStoreException
+   * @throws IOException
+   */
+  public static EnvKeyStore createWithRandomPassword(final String keyEnvVar, final String certEnvVar)
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    return new EnvKeyStore(
+        System.getenv(keyEnvVar),
+        System.getenv(certEnvVar),
+        new BigInteger(130, new SecureRandom()).toString(32)
+    );
+  }
+
+  /**
+   * Create a TrustStore representation from an environment variable.
+   *
+   * @param trustEnvVar The environment variable name of the certificate
+   * @return an EnvKeyStore with a loaded TrustStore
+   * @throws CertificateException
+   * @throws NoSuchAlgorithmException
+   * @throws KeyStoreException
+   * @throws IOException
+   */
+  public static EnvKeyStore createWithRandomPassword(final String trustEnvVar)
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    return new EnvKeyStore(
+        System.getenv(trustEnvVar),
+        new BigInteger(130, new SecureRandom()).toString(32)
     );
   }
 
@@ -77,8 +118,10 @@ public class EnvKeyStore {
     );
   }
 
-  EnvKeyStore(String cert)
+  EnvKeyStore(String cert, String password)
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    this.password = password;
+
     this.keystore = createTrustStore(
         new StringReader(cert)
     );
@@ -127,7 +170,7 @@ public class EnvKeyStore {
     Files.delete(temp.toPath());
   }
 
-  public static KeyStore createKeyStore(final Reader keyReader, final Reader certReader, final String password)
+  private static KeyStore createKeyStore(final Reader keyReader, final Reader certReader, final String password)
       throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
     PEMParser pem = new PEMParser(keyReader);
     PEMKeyPair pemKeyPair = ((PEMKeyPair) pem.readObject());
