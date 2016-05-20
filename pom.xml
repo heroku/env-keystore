@@ -3,7 +3,7 @@
   <groupId>com.github.jkutner</groupId>
   <artifactId>env-keystore</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.1</version>
   <name>env-keystore</name>
   <description>Creates KeyStore and TrustStore from environment variables</description>
 
@@ -25,7 +25,7 @@
     <url>https://github.com/jkutner/env-keystore</url>
     <connection>scm:git:git@github.com:jkutner/env-keystore.git</connection>
     <developerConnection>scm:git:git@github.com:jkutner/env-keystore.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>env-keystore-0.1.1</tag>
   </scm>
   <developers>
     <developer>
