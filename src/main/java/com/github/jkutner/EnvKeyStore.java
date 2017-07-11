@@ -16,6 +16,8 @@ import java.security.cert.X509Certificate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static java.lang.String.format;
+
 /**
  * This class is used to create a java.security.KeyStore from environment variables.
  *
@@ -180,7 +182,9 @@ public class EnvKeyStore {
     pem.close();
     keyReader.close();
 
-    X509Certificate certificate = parseCert(certReader);
+    PEMParser parser = new PEMParser(certReader);
+    X509Certificate certificate = parseCert(parser);
+    parser.close();
 
     KeyStore ks = KeyStore.getInstance(DEFAULT_TYPE);
     ks.load(null);
@@ -190,19 +194,30 @@ public class EnvKeyStore {
 
   private static KeyStore createTrustStore(final Reader certReader)
       throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
-    X509Certificate certificate = parseCert(certReader);
+    PEMParser parser = new PEMParser(certReader);
 
     KeyStore ks = KeyStore.getInstance(DEFAULT_TYPE);
     ks.load(null);
-    ks.setCertificateEntry("alias", certificate);
+
+    int i = 0;
+    X509Certificate certificate;
+
+    while ((certificate = parseCert(parser)) != null) {
+      ks.setCertificateEntry(format("alias%d", i), certificate);
+      i += 1;
+    }
+
+    parser.close();
+
     return ks;
   }
 
-  private static X509Certificate parseCert(final Reader certReader) throws IOException, CertificateException {
-    PEMParser pem = new PEMParser(certReader);
-    X509CertificateHolder certHolder = (X509CertificateHolder) pem.readObject();
+  private static X509Certificate parseCert(PEMParser parser) throws IOException, CertificateException {
+    X509CertificateHolder certHolder = (X509CertificateHolder) parser.readObject();
+    if (certHolder == null) {
+      return null;
+    }
     X509Certificate certificate = new JcaX509CertificateConverter().getCertificate(certHolder);
-    pem.close();
     return certificate;
   }
 }
