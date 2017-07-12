@@ -12,7 +12,7 @@ Include this library in your application as a Maven depenency:
 <dependency>
   <groupId>com.github.jkutner</groupId>
   <artifactId>env-keystore</artifactId>
-  <version>0.1.2</version>
+  <version>0.1.4</version>
 </dependency>
 ```
 
