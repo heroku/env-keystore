@@ -32,6 +32,39 @@ public class EnvKeyStoreTest {
       "-----END CERTIFICATE-----\n" +
       "";
 
+  private static final String CERT2 = "-----BEGIN CERTIFICATE-----\n" +
+      "MIIFVTCCBD2gAwIBAgIQCUyj+k9fxfLQqDzn0jMv6zANBgkqhkiG9w0BAQsFADBw\n" +
+      "MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n" +
+      "d3cuZGlnaWNlcnQuY29tMS8wLQYDVQQDEyZEaWdpQ2VydCBTSEEyIEhpZ2ggQXNz\n" +
+      "dXJhbmNlIFNlcnZlciBDQTAeFw0xNjA2MjgwMDAwMDBaFw0xOTA5MjYxMjAwMDBa\n" +
+      "MGgxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1T\n" +
+      "YW4gRnJhbmNpc2NvMRUwEwYDVQQKEwxIZXJva3UsIEluYy4xFTATBgNVBAMMDCou\n" +
+      "aGVyb2t1LmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOg5PSxv\n" +
+      "hHP+odX89STGxPIpUi1me8eZ189A1WlQzkluVWLJG+tPyR7/QjW3JYLfZwwH5YXZ\n" +
+      "awZXV0A8UgVEPcVLP0m7jisJpqt5w8kB/q2ndmKPudvt6XZKk0BBv5CnC/cnyV6s\n" +
+      "XzNB8fjQdA2WngK3dEYsUny079EmfFBonr3zZ7IjQrnqdmMtu8VD1VvJsDWPvHSE\n" +
+      "UukIQcwrDiYtMhA3peXFd/6imPsjC4pR5TFLWXc7WMFk7XFqWqPIrnjH4WO3Pouu\n" +
+      "ZHYpZzQ5dcmUYmsTv0SaDlHsQr8qTx3ZyTrli54XZq82mJs8cyPmqp0PzgRn5RDp\n" +
+      "Hu3T5ujlB/8wCjkCAwEAAaOCAfEwggHtMB8GA1UdIwQYMBaAFFFo/5CvAgd1PMzZ\n" +
+      "ZWRiohK4WXI7MB0GA1UdDgQWBBSSwTZW+OBu4ZE4ADeYDTLI7n99yjAjBgNVHREE\n" +
+      "HDAaggwqLmhlcm9rdS5jb22CCmhlcm9rdS5jb20wDgYDVR0PAQH/BAQDAgWgMB0G\n" +
+      "A1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjB1BgNVHR8EbjBsMDSgMqAwhi5o\n" +
+      "dHRwOi8vY3JsMy5kaWdpY2VydC5jb20vc2hhMi1oYS1zZXJ2ZXItZzUuY3JsMDSg\n" +
+      "MqAwhi5odHRwOi8vY3JsNC5kaWdpY2VydC5jb20vc2hhMi1oYS1zZXJ2ZXItZzUu\n" +
+      "Y3JsMEwGA1UdIARFMEMwNwYJYIZIAYb9bAEBMCowKAYIKwYBBQUHAgEWHGh0dHBz\n" +
+      "Oi8vd3d3LmRpZ2ljZXJ0LmNvbS9DUFMwCAYGZ4EMAQICMIGDBggrBgEFBQcBAQR3\n" +
+      "MHUwJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBNBggrBgEF\n" +
+      "BQcwAoZBaHR0cDovL2NhY2VydHMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0U0hBMkhp\n" +
+      "Z2hBc3N1cmFuY2VTZXJ2ZXJDQS5jcnQwDAYDVR0TAQH/BAIwADANBgkqhkiG9w0B\n" +
+      "AQsFAAOCAQEAnzyF8h1zhBdLWSxuVS7KDK+PK0ZWOoiFnIUET0zDoAIhSZta2doy\n" +
+      "OoVqB7zsCgFRs+e1K82t6QaqvrewsJmm2Kn+zpktpF0ItYlO1oTWqsIU04WZbL+f\n" +
+      "fR3fMFzGlPna0AdyzIfMJu6XkyRagvWsNeg+z5KL3sQh/vJ7Xt32T//E7ogsQzTB\n" +
+      "cQXYP3zhChBO/+SvTuMzZiK/4Ay0wHi18IvRLZ32n2hmlZkhTaMKJRBoN/rDeBsk\n" +
+      "bMtzkhJ0WSYl+nWWjBzf4A7kvZO8EKHoUBXl8S8Ow4vkKg8hWKNP539aYgeMGZRj\n" +
+      "15LULbxx5DN05eFbIV6FlYpuWUxtCoSQ7Q==\n" +
+      "-----END CERTIFICATE-----\n" +
+      "";
+
   private static final String KEY = "-----BEGIN RSA PRIVATE KEY-----\n" +
       "MIIEpQIBAAKCAQEAzNJn1QD0zPCANSM9stuUt/4lfLxITCBWKfHFeZXDXhX8EVZB\n" +
       "jrdDVWJMuNF6Li8CBJEdvAXVRGeZcd/a1bzUO6Vo1Z127oxtcW2mc4PlDrp78Fhf\n" +
@@ -73,6 +106,18 @@ public class EnvKeyStoreTest {
     assert eks.keyStore() != null : "TrustStore is null";
 
     assert eks.keyStore().size() == 1 : "TrustStore does not contain 1 entry (" + eks.keyStore().size() + ")";
+  }
+
+  public void testTrustStoreWithMultiple()
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+
+    EnvKeyStore eks = new EnvKeyStore(CERT + CERT2, "password");
+
+    assert "password".equals(eks.password()) : "Password for trust cert was not set";
+
+    assert eks.keyStore() != null : "TrustStore is null";
+
+    assert eks.keyStore().size() == 2 : "TrustStore does not contain 2 entries (" + eks.keyStore().size() + ")";
   }
 
   public void testKeyStore()
