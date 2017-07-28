@@ -22,7 +22,7 @@ Creating a TrustStore requires that the certificate PEM be set as an environment
 You pass that environment variable name to the `EnvKeyStore.create` method:
 
 ```java
-KeyStore ts = EnvKeyStore.create("TRUSTED_CERT").keyStore();
+KeyStore ts = EnvKeyStore.createWithRandomPassword("TRUSTED_CERT").keyStore();
 ```
 
 You can use the KeyStore like any other. For example, you might invoke a service with the trusted cert:
