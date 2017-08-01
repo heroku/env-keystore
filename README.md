@@ -10,7 +10,7 @@ Include this library in your application as a Maven depenency:
 
 ```xml
 <dependency>
-  <groupId>com.github.jkutner</groupId>
+  <groupId>com.heroku.sdk</groupId>
   <artifactId>env-keystore</artifactId>
   <version>0.1.4</version>
 </dependency>

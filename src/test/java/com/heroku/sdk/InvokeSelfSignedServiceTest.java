@@ -1,4 +1,4 @@
-package com.github.jkutner;
+package com.heroku.sdk;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;

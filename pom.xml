@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.jkutner</groupId>
+  <groupId>com.heroku.sdk</groupId>
   <artifactId>env-keystore</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.4-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <name>env-keystore</name>
   <description>Creates KeyStore and TrustStore from environment variables</description>
 
-  <url>https://github.com/jkutner/env-keystore</url>
+  <url>https://github.com/heroku/env-keystore</url>
   <licenses>
     <license>
       <name>MIT</name>
-      <url>https://github.com/jkutner/env-keystore/blob/master/LICENSE</url>
+      <url>https://github.com/heroku/env-keystore/blob/master/LICENSE</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -22,9 +22,9 @@
     </snapshotRepository>
   </distributionManagement>
   <scm>
-    <url>https://github.com/jkutner/env-keystore</url>
-    <connection>scm:git:git@github.com:jkutner/env-keystore.git</connection>
-    <developerConnection>scm:git:git@github.com:jkutner/env-keystore.git</developerConnection>
+    <url>https://github.com/heroku/env-keystore</url>
+    <connection>scm:git:git@github.com:heroku/env-keystore.git</connection>
+    <developerConnection>scm:git:git@github.com:heroku/env-keystore.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <developers>
@@ -36,7 +36,7 @@
   </developers>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/jkutner/env-keystore/issues/new</url>
+    <url>https://github.com/heroku/env-keystore/issues/new</url>
   </issueManagement>
 
   <properties>

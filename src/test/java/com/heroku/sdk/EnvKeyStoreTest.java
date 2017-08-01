@@ -1,4 +1,4 @@
-package com.github.jkutner;
+package com.heroku.sdk;
 
 import java.io.File;
 import java.io.FileInputStream;
