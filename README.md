@@ -12,7 +12,7 @@ Include this library in your application as a Maven depenency:
 <dependency>
   <groupId>com.heroku.sdk</groupId>
   <artifactId>env-keystore</artifactId>
-  <version>0.1.4</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
