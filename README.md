@@ -1,4 +1,4 @@
-# EnvKeyStore [![Build Status](https://travis-ci.org/jkutner/env-keystore.svg?branch=master)](https://travis-ci.org/jkutner/env-keystore)
+# EnvKeyStore [![Build Status](https://travis-ci.org/heroku/env-keystore.svg?branch=master)](https://travis-ci.org/heroku/env-keystore) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.heroku.sdk/env-keystore/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.heroku.sdk/env-keystore)
 
 A Java library to create
 [KeyStore](http://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html)
