@@ -7,11 +7,11 @@
   <name>env-keystore</name>
   <description>Creates KeyStore and TrustStore from environment variables</description>
 
-  <url>https://github.com/heroku/env-keystore</url>
+  <url>https://github.com/jkutner/env-keystore</url>
   <licenses>
     <license>
       <name>MIT</name>
-      <url>https://github.com/heroku/env-keystore/blob/master/LICENSE</url>
+      <url>https://github.com/jkutner/env-keystore/blob/master/LICENSE</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -22,9 +22,9 @@
     </snapshotRepository>
   </distributionManagement>
   <scm>
-    <url>https://github.com/heroku/env-keystore</url>
-    <connection>scm:git:git@github.com:heroku/env-keystore.git</connection>
-    <developerConnection>scm:git:git@github.com:heroku/env-keystore.git</developerConnection>
+    <url>https://github.com/jkutner/env-keystore</url>
+    <connection>scm:git:git@github.com:jkutner/env-keystore.git</connection>
+    <developerConnection>scm:git:git@github.com:jkutner/env-keystore.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <developers>
@@ -36,7 +36,7 @@
   </developers>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/heroku/env-keystore/issues/new</url>
+    <url>https://github.com/jkutner/env-keystore/issues/new</url>
   </issueManagement>
 
   <properties>
