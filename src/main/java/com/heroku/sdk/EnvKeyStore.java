@@ -1,21 +1,33 @@
 package com.heroku.sdk;
 
+import static java.lang.String.format;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.function.Consumer;
+
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
-
-import java.io.*;
-import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.function.Consumer;
-
-import static java.lang.String.format;
 
 /**
  * This class is used to create a java.security.KeyStore from environment variables.
@@ -62,6 +74,39 @@ public class EnvKeyStore {
         System.getenv(trustEnvVar),
         System.getenv(passwordEnvVar)
     );
+  }
+
+  /**
+   * Create a KeyStore representation from an environment variable.
+   *
+   * @param key The the certificate as a string
+   * @param cert The certificate as a string
+   * @param password The password as a string
+   * @return an EnvKeyStore with a loaded TrustStore
+   * @throws CertificateException
+   * @throws NoSuchAlgorithmException
+   * @throws KeyStoreException
+   * @throws IOException
+   */
+  public static EnvKeyStore createFromPEMStrings(final String key, final String cert, final String password)
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    return new EnvKeyStore(key, cert, password);
+  }
+
+  /**
+   * Create a TrustStore representation from an environment variable.
+   *
+   * @param trust The the certificate as a string
+   * @param password The password as a string
+   * @return an EnvKeyStore with a loaded TrustStore
+   * @throws CertificateException
+   * @throws NoSuchAlgorithmException
+   * @throws KeyStoreException
+   * @throws IOException
+   */
+  public static EnvKeyStore createFromPEMStrings(final String trust, final String password)
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    return new EnvKeyStore(trust, password);
   }
 
   /**
