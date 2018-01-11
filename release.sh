@@ -31,10 +31,13 @@ set -e
 #   </profile>
 # </profiles>
 
+stty -echo && printf "GPG password: " && read gpgPwd && printf '\n' && stty echo
+
+
 # Now we can prepare for release (it's not really permantent, but there's no harm in overreacting at this point)
 read -p "Are you sure you want to release? It's permanent! (press any key to continue)"
 ./mvnw release:clean release:prepare
 
 # Now we can actually release (it's slightly more permantent now)
 read -p "Are you still sure you want to release? It's permanent! (press any key to continue)"
-./mvnw release:perform
+./mvnw release:perform -Darguments="-Dgpg.passphrase=$gpgPwd"
