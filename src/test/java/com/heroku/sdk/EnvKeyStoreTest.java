@@ -94,6 +94,35 @@ public class EnvKeyStoreTest {
       "-----END RSA PRIVATE KEY-----\n" +
       "";
 
+  private static final String KEY_PKCS8 = "-----BEGIN PRIVATE KEY-----\n" +
+      "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDM0mfVAPTM8IA1\n" +
+      "Iz2y25S3/iV8vEhMIFYp8cV5lcNeFfwRVkGOt0NVYky40XouLwIEkR28BdVEZ5lx\n" +
+      "39rVvNQ7pWjVnXbujG1xbaZzg+UOunvwWF92uCsqGDGyQBsLTOxINm4oljbfBM40\n" +
+      "0zqDvG0Bc/QPFuSCyNnA2FTHWIjjPB2OhiRoBSnEPkvuf5pIvdrLQynEHyQPAU1O\n" +
+      "stNI5rM4wBPDi7OJ8E+PJmQVaqtJjZo8UkcJDK7UJw34CJyrASSPYkggafhvr4mo\n" +
+      "ixSQ1EIexzOei4me5ZgFo9+R8ioTWOtbmFA2TPjjva2Fxc/+Iq4NMQWHcjdxgY3t\n" +
+      "0Q48ac3nAgMBAAECggEAKiXJ9A0EUv/SghzEX3/L9Ki5shdUkUW+NVdpGYH19/By\n" +
+      "NGcZinKvymw1+XoxuDs4IRRzl/NjVXY0Hzi/YWhADB4Xmo2SobgH9WVo8TBc/FDn\n" +
+      "nCezTUzMpRbhcxq59fNYU+vPc06l7/KfNEObMOyfScNAn7JIR5lpJcPefj77vDaO\n" +
+      "aJA1e+BXsK20GJLAmJdLq3aTeI217Sbs1oyAQHOH3TuC0geiP00F+8tPjgxf62I7\n" +
+      "CtNETHrV+HGW6FvBu/8gSzEtqGXs5JW3aC0xvOFlnev8OeEjlBh3uK95J4oIhs4f\n" +
+      "WZE7jeVnkFpNKY8ux4t89PEpoEk/qbpZfprbrHD3QQKBgQDlxG0Y/h5A4DLUl7BB\n" +
+      "FBhzDyL3gYJ+XWF1mbYg0cstH7VXzNqfpeV6Ds1fHfvmHFlZtu8pwdT6GFpwyIx5\n" +
+      "d/v7GMa90YSpt3tFbJVrg2V38Gnza6dPQbNJI3qhFlRHHLRlCKqWCCg3TW9n9S4o\n" +
+      "jCBUx60RCZlYNZhNB8MAeO7pEQKBgQDkNOHrBxTk2NtGBFVOSLtYHeG5xl31GdKt\n" +
+      "psM9jVJDh7j+cxhp+nSoJ8AIF4PEARXo4Ik1zv94iMhCo6VnbXhrSgIk8unqLYFf\n" +
+      "zI7aGirl/BFa94adqGenIYCkqo6pRzsN3a5EFjUNtlAkKHJxELL0KWs6lgOypOxE\n" +
+      "fLuDDTwHdwKBgQCfbZZNuzX+yhI7FS3FWk5EuAIJPyHu0JipYwjO6QNTwiawT4J7\n" +
+      "OD9sXA0ArOt2lcEh0R9OGCLRjkhi7aUbO7fqWRy95T1qDdhJKbjcKwYjHPxHXTFw\n" +
+      "eyQN4cJbOAUueqppWIQVKn/NL7vXpHZsyB4+9XYO1lxCqp2NBY+3KjKMIQKBgQDI\n" +
+      "Rey6oXVhvTr6gJUI5eWcWGUf74nHr4joIwEXRK4cW8ErdYDIiSfV50StFU3rNvSu\n" +
+      "cleYZHhppMjzSsC/OyBCMCofmRtWC+eNVm1L1Ukumv/0MGTwebm1wD4wxQn8X2nh\n" +
+      "KlpkoISg6w38HY8J0RjsFGlpefv2zKwZEspRIc070wKBgQDDvSJKeIO1zjO6ZuoI\n" +
+      "LKffGukMVHZ4vfTbAQTwCo9ocCXz5bmsAgNrE7vJ7deFD36Hw3u4+nnu7LwbiUeb\n" +
+      "L5PCy+5DEoNdjdtTXHkPjZR9dSyjCUoBjJk7ZuLom71fTg/t2wryWmJIaTj63WD9\n" +
+      "Un3T1itazZrTF7txbV/BngySyw==\n" +
+      "-----END PRIVATE KEY-----\n";
+
   private static final String PASSWORD = "password";
 
   public void testTrustStore()
@@ -124,6 +153,22 @@ public class EnvKeyStoreTest {
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 
     EnvKeyStore eks = new EnvKeyStore(KEY, CERT, PASSWORD);
+
+    assert eks.password().equals(PASSWORD) : "Password for key store is incorrect";
+
+    assert eks.keyStore() != null : "KeyStore is null";
+
+    assert eks.keyStore().size() == 1 : "KeyStore does not contain 1 entry (" + eks.keyStore().size() + ")";
+
+    eks.asFile( f -> {
+      assertValidKeyStore(f, eks);
+    });
+  }
+
+  public void testKeyStorePkcs8()
+          throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+
+    EnvKeyStore eks = new EnvKeyStore(KEY_PKCS8, CERT, PASSWORD);
 
     assert eks.password().equals(PASSWORD) : "Password for key store is incorrect";
 
