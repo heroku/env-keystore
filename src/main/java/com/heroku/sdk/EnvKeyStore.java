@@ -23,6 +23,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.function.Consumer;
 
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.openssl.PEMKeyPair;
@@ -218,12 +219,7 @@ public class EnvKeyStore {
 
   private static KeyStore createKeyStore(final Reader keyReader, final Reader certReader, final String password)
       throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
-    PEMParser pem = new PEMParser(keyReader);
-    PEMKeyPair pemKeyPair = ((PEMKeyPair) pem.readObject());
-    JcaPEMKeyConverter jcaPEMKeyConverter = new JcaPEMKeyConverter();
-    KeyPair keyPair = jcaPEMKeyConverter.getKeyPair(pemKeyPair);
-    PrivateKey key = keyPair.getPrivate();
-    pem.close();
+    PrivateKey key = getPrivateKeyFromPEM(keyReader);
     keyReader.close();
 
     PEMParser parser = new PEMParser(certReader);
@@ -234,6 +230,29 @@ public class EnvKeyStore {
     ks.load(null);
     ks.setKeyEntry("alias", key, password.toCharArray(), new X509Certificate[]{certificate});
     return ks;
+  }
+
+  private static PrivateKey getPrivateKeyFromPEM(final Reader keyReader)
+    throws IOException {
+    final JcaPEMKeyConverter jcaPEMKeyConverter = new JcaPEMKeyConverter();
+
+    final PEMParser pem = new PEMParser(keyReader);
+
+    PrivateKey key;
+    Object pemContent = pem.readObject();
+    if(pemContent instanceof PEMKeyPair) {
+      PEMKeyPair pemKeyPair = (PEMKeyPair)pemContent;
+      KeyPair keyPair = jcaPEMKeyConverter.getKeyPair(pemKeyPair);
+      key = keyPair.getPrivate();
+    } else if (pemContent instanceof PrivateKeyInfo) {
+      PrivateKeyInfo privateKeyInfo = (PrivateKeyInfo) pemContent;
+      key = jcaPEMKeyConverter.getPrivateKey(privateKeyInfo);
+    } else {
+      throw new IllegalArgumentException("Unsupported private key format '" + pemContent.getClass().getSimpleName() + '"');
+    }
+
+    pem.close();
+    return key;
   }
 
   private static KeyStore createTrustStore(final Reader certReader)
