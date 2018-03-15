@@ -223,12 +223,18 @@ public class EnvKeyStore {
     keyReader.close();
 
     PEMParser parser = new PEMParser(certReader);
-    X509Certificate certificate = parseCert(parser);
-    parser.close();
-
     KeyStore ks = KeyStore.getInstance(DEFAULT_TYPE);
     ks.load(null);
-    ks.setKeyEntry("alias", key, password.toCharArray(), new X509Certificate[]{certificate});
+
+    int i = 0;
+    X509Certificate certificate;
+
+    while ((certificate = parseCert(parser)) != null) {
+      ks.setKeyEntry(format("alias%d", i), key, password.toCharArray(), new X509Certificate[]{certificate});
+      i += 1;
+    }
+
+    parser.close();
     return ks;
   }
 
