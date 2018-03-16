@@ -165,6 +165,18 @@ public class EnvKeyStoreTest {
     });
   }
 
+  public void testKeyStoreWithMultiple()
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+
+    EnvKeyStore eks = new EnvKeyStore(KEY, CERT + "\n" + CERT2, PASSWORD);
+
+    assert eks.password().equals(PASSWORD) : "Password for key store is incorrect";
+
+    assert eks.keyStore() != null : "KeyStore is null";
+
+    assert eks.keyStore().size() == 2 : "KeyStore does not contain 2 entries (" + eks.keyStore().size() + ")";
+  }
+
   public void testKeyStorePkcs8()
           throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 
