@@ -21,6 +21,8 @@ import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -226,13 +228,14 @@ public class EnvKeyStore {
     KeyStore ks = KeyStore.getInstance(DEFAULT_TYPE);
     ks.load(null);
 
-    int i = 0;
-    X509Certificate certificate;
+    List<X509Certificate> certificates = new ArrayList<>();
 
+    X509Certificate certificate;
     while ((certificate = parseCert(parser)) != null) {
-      ks.setKeyEntry(format("alias%d", i), key, password.toCharArray(), new X509Certificate[]{certificate});
-      i += 1;
+      certificates.add(certificate);
     }
+
+    ks.setKeyEntry("alias", key, password.toCharArray(), certificates.toArray(new X509Certificate[]{}));
 
     parser.close();
     return ks;
@@ -286,7 +289,6 @@ public class EnvKeyStore {
     if (certHolder == null) {
       return null;
     }
-    X509Certificate certificate = new JcaX509CertificateConverter().getCertificate(certHolder);
-    return certificate;
+    return new JcaX509CertificateConverter().getCertificate(certHolder);
   }
 }

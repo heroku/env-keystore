@@ -65,6 +65,92 @@ public class EnvKeyStoreTest {
       "-----END CERTIFICATE-----\n" +
       "";
 
+  /**
+   * This was created by first generating a rootCA:
+   *
+   *     $ openssl genrsa -out rootCA.key 2048
+   *     $ openssl genrsa -des3 -out rootCA.key 2048
+   *
+   * Then self-signing the rootCA:
+   *
+   *     $ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
+   *
+   *  Next, the device certificate is created:
+   *
+   *     $ openssl genrsa -out device.key 2048
+   *     $ openssl req -new -key device.key -out device.csr
+   *
+   *  And finally sign the device cert with the rootCA:
+   *
+   *     $ openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 500 -sha256
+   *
+   */
+  private static final String CERT_CHAIN = "-----BEGIN CERTIFICATE-----\n" +
+      "MIIC2jCCAcICCQCYLB6wn3VPSjANBgkqhkiG9w0BAQsFADBLMQswCQYDVQQGEwJV\n" +
+      "UzETMBEGA1UECAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNU2FuIEZyYW5jaXNjbzEP\n" +
+      "MA0GA1UECgwGSGVyb2t1MB4XDTE4MDMxOTE5MzkzNloXDTE5MDgwMTE5MzkzNlow\n" +
+      "EzERMA8GA1UEAwwIMTAuMC4wLjEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK\n" +
+      "AoIBAQDpKw/kf8OvoKPOL7albfVn+3jcUg3KrqcPkVhimX99e/y+D/U0TscBtG/U\n" +
+      "cjfX5JYxXSZLnc28AtwPXglqHWXOWIn+HQPAxk+taS+EGNq0/CiSmxD1ULDP56ls\n" +
+      "lys5ygwNIhDMU7BztGsr91jjHCRTnkmP0w4AtjwIIqu7GF2Q2hRb5y3KtkmMr7lQ\n" +
+      "qrWE/d57fFZJ72UK9k9odNI7jaVjD+IJqG5vJL3QDErSTga93dua/lORWIb7AsVQ\n" +
+      "ufUOnTxc49B3ASQYRxJRdWq/tVc6RYtr1csDWnI/0oi2dMiYSMqkbeOAaORN8Kof\n" +
+      "8nJWHkT9IaZM0hoSJBxSszpHeRgFAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAAlj\n" +
+      "vmfwl0GGx1bIg7YyVdn8XcTmjHHbLrEljkQ3aQdFjBQcmKL+C7VYQBLXdtUka9kD\n" +
+      "W0YNIvMFzBQDCxp9HDg8++FcXQlV124q7aQ4lmKzSG7E07TT88n8yesbiZC0gvPL\n" +
+      "GX3WdFHXBLkT3NE7XheZdIMwPDXrv/GSQj8lmJKYJiHXWU2AtthNObZUtP8mLV5B\n" +
+      "W+Q+SgoOcW6gBUHQm8P8OHYuvTpxAacQfKQj4CXsIdHaxYTOSZNZ6zD0SN6TW2bx\n" +
+      "0iwlD3gIDqVYYlmaIM46X6FyFJm8lFr0mSF81YMAHsmQE1OoEtbD0xHN0WrQM4hs\n" +
+      "vXCqJ8T81qBiZHHFDh0=\n" +
+      "-----END CERTIFICATE-----\n" +
+      "-----BEGIN CERTIFICATE-----\n" +
+      "MIIDEjCCAfoCCQDkkuFSQ5K/zzANBgkqhkiG9w0BAQsFADBLMQswCQYDVQQGEwJV\n" +
+      "UzETMBEGA1UECAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNU2FuIEZyYW5jaXNjbzEP\n" +
+      "MA0GA1UECgwGSGVyb2t1MB4XDTE4MDMxOTE5MzEwMloXDTIxMDEwNjE5MzEwMlow\n" +
+      "SzELMAkGA1UEBhMCVVMxEzARBgNVBAgMCkNhbGlmb3JuaWExFjAUBgNVBAcMDVNh\n" +
+      "biBGcmFuY2lzY28xDzANBgNVBAoMBkhlcm9rdTCCASIwDQYJKoZIhvcNAQEBBQAD\n" +
+      "ggEPADCCAQoCggEBALRfrvEeATOvGL8GHYWZDwmQI8saDihGSZO/bgoFOuPKBYrT\n" +
+      "X2mcjhzV5L68OGgrmIWY60KXqTKKMXTdmksg0nheTZUUQmPYQmPtbKypmywoNpXx\n" +
+      "ys/I/awbhqub1asEH02u2j40I2wmVOQ0da3AQ9hi2SaVA0v4LEGmKA8F7LqNbT1s\n" +
+      "ffBqsNeWHRMKhR0zO7tHty3Y6ND9F0e2o5mlW8Zvq75z0xoWlhvkUcnd2rT6K23O\n" +
+      "DyDo0UnJqSbKJgVwV/Vc2eQtfaEpQNrYTeFRl2nNO1xJ2RLzXrvnKFJijLzR3t0n\n" +
+      "R0bPteQ2ohuTTnZVuOdQecGQWSFpTS4CuwpPzfECAwEAATANBgkqhkiG9w0BAQsF\n" +
+      "AAOCAQEAlS33nE+Nx67+teKw1sAicZoqiQK62fyMAZWKhJwQN0SwxHpka3nl8+OO\n" +
+      "kzMgPsGhtz9YEbkZXZgGRkiCTelxNg6h6Z792chVVtkFALOx0tdNi2WMzTdOz8+W\n" +
+      "yHU+5Q8IyyiaZQJ+YhBHH1qPD38B3BLSidlWJp2YDH6kh1pfJ2LR+cxGfy+KEUvc\n" +
+      "EZzIFJFdz0/o6eO+3UpUsOlayCR8OSvsaaRFrLwoFArJ7pBEJSIZvuB6ixlzyJsv\n" +
+      "kctOzOT7RjPDdOfwVTHHlleGEIFWmryWf5XNCwe0A+uIMcRc8h+KfE6A+5LRKIBn\n" +
+      "8EPLIFVvSczRIpSbjuEwWYBvEWoE2Q==\n" +
+      "-----END CERTIFICATE-----\n";
+
+  private static final String CERT_CHAIN_KEY = "-----BEGIN RSA PRIVATE KEY-----\n" +
+      "MIIEowIBAAKCAQEA6SsP5H/Dr6Cjzi+2pW31Z/t43FINyq6nD5FYYpl/fXv8vg/1\n" +
+      "NE7HAbRv1HI31+SWMV0mS53NvALcD14Jah1lzliJ/h0DwMZPrWkvhBjatPwokpsQ\n" +
+      "9VCwz+epbJcrOcoMDSIQzFOwc7RrK/dY4xwkU55Jj9MOALY8CCKruxhdkNoUW+ct\n" +
+      "yrZJjK+5UKq1hP3ee3xWSe9lCvZPaHTSO42lYw/iCahubyS90AxK0k4Gvd3bmv5T\n" +
+      "kViG+wLFULn1Dp08XOPQdwEkGEcSUXVqv7VXOkWLa9XLA1pyP9KItnTImEjKpG3j\n" +
+      "gGjkTfCqH/JyVh5E/SGmTNIaEiQcUrM6R3kYBQIDAQABAoIBAQCG29owTdlPrjiv\n" +
+      "25bnLab/wknQHEFP1h5X+bfGJ4O+f0TaZP5sh5fAm60Gkh1MaDCaUocAuz+wG3NO\n" +
+      "DBSj5GbqpvkBGaT/DXQuFyVdYMa2YRXSXY+8YzQwu4uZfAGLRhocSnSuyUTIVzSZ\n" +
+      "VFF74d384xMm9Wom7T/hcLQk3V3Ylb7ucZTwd39L14AOQfIdDL1r62aJguRNIpjA\n" +
+      "NM6HlPWBaoG+s3rcmxcVVa8lFzPee5HHbK05QgeZH4X+J3c6IkpTiifoP5yfvoRP\n" +
+      "uQUs3MGcLgKjZqAlONm7z/Y4J+F34ag0F3tUQO6j1zrTJjVoSc9SW+763hgb5Gg6\n" +
+      "bBUu5t9NAoGBAPtwAIIIxXvN09pF54xLyPXu8ihFgCQdtVo7/hZHY6AAQn+25on9\n" +
+      "JiyEQV8+6UH2APmbJCy2ypyWhWp+pVQsbehsQLWa4VUrXc79a8bHA9BCbecpcIFx\n" +
+      "LTUMs8mgo6a7SUGWQkG7Kv+F8IdXXSVEhgAMpYckPtGgOJLyeUpfqFjbAoGBAO1m\n" +
+      "Ma6WSdHEuq8jteoaaSG8LodSi5fxDM5ja/9fo7/mrOr2mDKjrNYIWfzoR2Pmj/MI\n" +
+      "SNPUoun1koierMRezReCQD9jVkxYsx/v55h9rL/H6elk/IiM75PtM2mhKLzGbSeP\n" +
+      "bOWnamGVu8Gz8Y9YsJeTrGUinH0MxBnOM6+TjjifAoGAP5F0f2uqSf+itQeBX+X1\n" +
+      "G8BadrYDjJ36MKMEPSu1U0ldhp5+MJrQ4OZbBLKKFIQWgQSpI6jfFrGzb1YvhFVr\n" +
+      "QBzGS2Op3neFUwSdD/dWzntM/+lpKUCs1kGs3qf/V/L3tV5AyA+C8nExe3Yp9Xca\n" +
+      "jb6kxsLyIttoEja9VYFTtYsCgYAil/e5ZzEOnkpN5zhFCuAzCEcHdSHeXEPvd1Fv\n" +
+      "fzJPbn/YJWL8ThmLfuAOGJL+ncRwN87U/3FWAnD985FddCsSt+pA0mrq6SoBB2aK\n" +
+      "NBYOREVzu0GJbHAk8DXDuLZE++1ADIhj1seLvNQFYAFdUCE7lUtT2X1QQ6H32LJz\n" +
+      "bV8WJQKBgCqKCx6yZ1YMxQ2xZGRXf4Q6/lui9T+qVOkDamoCdM8ibx0MEv+YH84G\n" +
+      "k0AyWcf2TZUUiitbC3H5qNGg6C19BA9DvcGb/mA6l4VzRFuasTT7SzVzyb64y/zA\n" +
+      "E1VmUpKGvyAKPN6R7AkFmn4Q4I0lCAai0JtPVLe4iZsi6C1HqOrN\n" +
+      "-----END RSA PRIVATE KEY-----\n";
+
   private static final String KEY = "-----BEGIN RSA PRIVATE KEY-----\n" +
       "MIIEpQIBAAKCAQEAzNJn1QD0zPCANSM9stuUt/4lfLxITCBWKfHFeZXDXhX8EVZB\n" +
       "jrdDVWJMuNF6Li8CBJEdvAXVRGeZcd/a1bzUO6Vo1Z127oxtcW2mc4PlDrp78Fhf\n" +
@@ -160,7 +246,7 @@ public class EnvKeyStoreTest {
 
     assert eks.keyStore().size() == 1 : "KeyStore does not contain 1 entry (" + eks.keyStore().size() + ")";
 
-    eks.asFile( f -> {
+    eks.asFile(f -> {
       assertValidKeyStore(f, eks);
     });
   }
@@ -168,17 +254,20 @@ public class EnvKeyStoreTest {
   public void testKeyStoreWithMultiple()
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 
-    EnvKeyStore eks = new EnvKeyStore(KEY, CERT + "\n" + CERT2, PASSWORD);
+    EnvKeyStore eks = new EnvKeyStore(CERT_CHAIN_KEY, CERT_CHAIN, PASSWORD);
 
     assert eks.password().equals(PASSWORD) : "Password for key store is incorrect";
 
     assert eks.keyStore() != null : "KeyStore is null";
 
-    assert eks.keyStore().size() == 2 : "KeyStore does not contain 2 entries (" + eks.keyStore().size() + ")";
+    assert eks.keyStore().size() == 1 : "KeyStore does not contain 1 entry (" + eks.keyStore().size() + ")";
+
+    assert eks.keyStore().getCertificateChain("alias").length == 2 :
+        "Certificate chain does not contain 2 entries (" + eks.keyStore().getCertificateChain("alias").length + ")";
   }
 
   public void testKeyStorePkcs8()
-          throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 
     EnvKeyStore eks = new EnvKeyStore(KEY_PKCS8, CERT, PASSWORD);
 
@@ -188,7 +277,7 @@ public class EnvKeyStoreTest {
 
     assert eks.keyStore().size() == 1 : "KeyStore does not contain 1 entry (" + eks.keyStore().size() + ")";
 
-    eks.asFile( f -> {
+    eks.asFile(f -> {
       assertValidKeyStore(f, eks);
     });
   }
