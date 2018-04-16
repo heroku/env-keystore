@@ -1,5 +1,8 @@
 package com.heroku.sdk;
 
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -233,6 +236,32 @@ public class EnvKeyStoreTest {
     assert eks.keyStore() != null : "TrustStore is null";
 
     assert eks.keyStore().size() == 2 : "TrustStore does not contain 2 entries (" + eks.keyStore().size() + ")";
+  }
+
+  public void testAddToTrustStore()
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+
+    TrustManagerFactory tmf = TrustManagerFactory
+        .getInstance(TrustManagerFactory.getDefaultAlgorithm());
+    tmf.init((KeyStore) null);
+
+    X509TrustManager defaultTm = null;
+    for (TrustManager tm : tmf.getTrustManagers()) {
+      if (tm instanceof X509TrustManager) {
+        defaultTm = (X509TrustManager) tm;
+        break;
+      }
+    }
+
+    assert defaultTm != null : "TrustStore not found";
+
+    assert defaultTm.getAcceptedIssuers().length != 0: "TrustStore is empty";
+
+    EnvKeyStore eks = new EnvKeyStore(CERT, "password", defaultTm.getAcceptedIssuers());
+
+    assert eks.keyStore() != null : "TrustStore is null";
+
+    assert eks.keyStore().size() > 1 : "TrustStore only contains 1 entry (" + eks.keyStore().size() + ")";
   }
 
   public void testKeyStore()
