@@ -32,6 +32,10 @@ import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+
 /**
  * This class is used to create a java.security.KeyStore from environment variables.
  *
@@ -76,6 +80,37 @@ public class EnvKeyStore {
     return new EnvKeyStore(
         System.getenv(trustEnvVar),
         System.getenv(passwordEnvVar)
+    );
+  }
+
+  /**
+   * Create a TrustStore representation from an environment variable and add it to the default TrustStore.
+   *
+   * @param trustEnvVar The environment variable name of the certificate
+   * @return an EnvKeyStore with a loaded TrustStore
+   * @throws CertificateException
+   * @throws NoSuchAlgorithmException
+   * @throws KeyStoreException
+   * @throws IOException
+   */
+  public static EnvKeyStore addToDefaultTrustStore(final String trustEnvVar)
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    TrustManagerFactory tmf = TrustManagerFactory
+        .getInstance(TrustManagerFactory.getDefaultAlgorithm());
+    tmf.init((KeyStore) null);
+
+    X509TrustManager defaultTm = null;
+    for (TrustManager tm : tmf.getTrustManagers()) {
+      if (tm instanceof X509TrustManager) {
+        defaultTm = (X509TrustManager) tm;
+        break;
+      }
+    }
+
+    return new EnvKeyStore(
+        System.getenv(trustEnvVar),
+        new BigInteger(130, new SecureRandom()).toString(32),
+        defaultTm == null ? new X509Certificate[]{} : defaultTm.getAcceptedIssuers()
     );
   }
 
@@ -176,6 +211,16 @@ public class EnvKeyStore {
     );
   }
 
+  EnvKeyStore(String cert, String password, X509Certificate[] acceptedIssuers)
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    this.password = password;
+
+    this.keystore = createTrustStore(
+        new StringReader(cert),
+        acceptedIssuers
+    );
+  }
+
   public String password() {
     return this.password;
   }
@@ -266,14 +311,24 @@ public class EnvKeyStore {
 
   private static KeyStore createTrustStore(final Reader certReader)
       throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
+    return createTrustStore(certReader, new X509Certificate[]{});
+  }
+
+  private static KeyStore createTrustStore(final Reader certReader, final X509Certificate[] acceptedIssuers)
+      throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
     PEMParser parser = new PEMParser(certReader);
 
     KeyStore ks = KeyStore.getInstance(DEFAULT_TYPE);
     ks.load(null);
 
     int i = 0;
-    X509Certificate certificate;
 
+    for (X509Certificate certificate : acceptedIssuers) {
+      ks.setCertificateEntry(format("alias%d", i), certificate);
+      i += 1;
+    }
+
+    X509Certificate certificate;
     while ((certificate = parseCert(parser)) != null) {
       ks.setCertificateEntry(format("alias%d", i), certificate);
       i += 1;
