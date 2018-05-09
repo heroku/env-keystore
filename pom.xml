@@ -43,7 +43,7 @@
     <source.plugin.version>2.1.2</source.plugin.version>
     <gpg.plugin.version>1.2</gpg.plugin.version>
     <javadoc.plugin.version>2.7</javadoc.plugin.version>
-    <bouncycastle.version>1.54</bouncycastle.version>
+    <bouncycastle.version>1.59</bouncycastle.version>
   </properties>
 
   <dependencies>
