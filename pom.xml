@@ -22,8 +22,8 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git@github.com:heroku/env-keystore.git</connection>
-    <developerConnection>scm:git:git@github.com:heroku/env-keystore.git</developerConnection>
+    <connection>scm:git:https://github.com/heroku/env-keystore.git</connection>
+    <developerConnection>scm:git:https://github.com/heroku/env-keystore.git</developerConnection>
     <url>https://github.com/heroku/env-keystore</url>
     <tag>HEAD</tag>
   </scm>
