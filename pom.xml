@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.heroku.sdk</groupId>
   <artifactId>env-keystore</artifactId>
@@ -25,7 +26,6 @@
     <connection>scm:git:https://github.com/heroku/env-keystore.git</connection>
     <developerConnection>scm:git:https://github.com/heroku/env-keystore.git</developerConnection>
     <url>https://github.com/heroku/env-keystore</url>
-    <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>GitHub</system>
@@ -39,9 +39,9 @@
   </distributionManagement>
   <properties>
     <gpg.plugin.version>1.2</gpg.plugin.version>
-    <bouncycastle.version>1.60</bouncycastle.version>
-    <javadoc.plugin.version>2.7</javadoc.plugin.version>
+    <bouncycastle.version>1.61</bouncycastle.version>
     <source.plugin.version>2.1.2</source.plugin.version>
+    <javadoc.plugin.version>2.7</javadoc.plugin.version>
   </properties>
   <dependencies>
     <dependency>
