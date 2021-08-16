@@ -1,0 +1,41 @@
+version: 2.1
+
+executors:
+  openjdk-8:
+    docker:
+      # https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8266261
+      # 8u302 is not out on CircleCI yet. When it's out, change the version below to 8.0.
+      - image: cimg/openjdk:8.0.282
+  openjdk-11:
+    docker:
+      - image: cimg/openjdk:11.0
+
+jobs:
+  maven:
+    parameters:
+      executor:
+        type: "string"
+    executor:
+      name: << parameters.executor >>
+    steps:
+      - checkout
+      - run: ./mvnw clean test
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
+
+workflows:
+  ci:
+    jobs:
+      - maven:
+          matrix:
+            parameters:
+              executor: ["openjdk-8", "openjdk-11"]
+
