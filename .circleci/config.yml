@@ -3,7 +3,9 @@ version: 2.1
 executors:
   openjdk-8:
     docker:
-      - image: cimg/openjdk:8.0
+      # https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8266261
+      # 8u302 is not out on CircleCI yet. When it's out, change the version below to 8.0.
+      - image: cimg/openjdk:8.0.282
   openjdk-11:
     docker:
       - image: cimg/openjdk:11.0
