@@ -1,0 +1,25 @@
+name: heroku/env-keystore/ci
+on:
+  push:
+jobs:
+  maven:
+    runs-on: sfdc-hk-ubuntu-latest
+    strategy:
+      matrix:
+        executor:
+        - openjdk-8
+        - openjdk-11
+    steps:
+    - uses: actions/checkout@v2
+    - run: "./mvnw clean test"
+    - name: Save test results
+      run: |-
+        mkdir -p ~/test-results/junit/
+        find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+      if: always()
+    - uses: actions/upload-artifact@v2
+      with:
+        path: "~/test-results"
+    - uses: actions/upload-artifact@v2
+      with:
+        path: "~/test-results/junit"
