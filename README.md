@@ -1,7 +1,7 @@
 # EnvKeyStore
-[![](https://badgen.net/github/license/heroku/env-keystore)](LICENSE)
-[![](https://badgen.net/maven/v/maven-central/com.heroku.sdk/env-keystore)](https://search.maven.org/artifact/com.heroku.sdk/env-keystore)
-[![](https://badgen.net/circleci/github/heroku/env-keystore/main)](https://circleci.com/gh/heroku/env-keystore/tree/main)
+![License](https://img.shields.io/github/license/heroku/env-keystore)
+![Maven Central](https://img.shields.io/maven-central/v/com.heroku.sdk/env-keystore)
+[![CI](https://github.com/heroku/env-keystore/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/env-keystore/actions/workflows/ci.yml)
 
 A Java library to create
 [KeyStore](http://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html)
