@@ -99,6 +99,8 @@ jobs:
           delete-branch: true
           committer: ${{ vars.LINGUIST_GH_APP_USERNAME }} <${{ vars.LINGUIST_GH_APP_EMAIL }}>
           author: ${{ vars.LINGUIST_GH_APP_USERNAME }} <${{ vars.LINGUIST_GH_APP_EMAIL }}>
+          labels: |
+            skip changelog
 
       - name: Configure pull request
         if: steps.pr.outputs.pull-request-operation == 'created'
