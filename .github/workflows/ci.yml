@@ -12,7 +12,7 @@ permissions:
 jobs:
   maven:
     name: "Execute build, run tests (Java ${{ matrix.java-version }})"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         java-version:
