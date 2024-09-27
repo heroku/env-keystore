@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- Migrate from bcpkix-jdk15on to bcpkix-jdk18on, fixing security issues with bouncycastle. ([#91](https://github.com/heroku/env-keystore/pull/91))
 
 ## [1.1.9] - 2024-07-17
 
