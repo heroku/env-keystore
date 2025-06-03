@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [1.1.12] - 2025-06-03
 
+- Update dependencies.
 
 ## [1.1.11] - 2024-11-11
 
