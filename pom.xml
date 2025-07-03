@@ -17,9 +17,9 @@
     </licenses>
     <developers>
         <developer>
-            <id>codefinger</id>
-            <name>Joe Kutner</name>
-            <email>jpkutner@gmail.com</email>
+            <id>malax</id>
+            <name>Manuel Fuchs</name>
+            <email>manuel.fuchs@salesforce.com</email>
         </developer>
     </developers>
     <scm>
@@ -31,12 +31,6 @@
         <system>GitHub</system>
         <url>https://github.com/heroku/env-keystore/issues/new</url>
     </issueManagement>
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -107,14 +101,12 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.7.0</version>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <publishingServerId>central</publishingServerId>
                 </configuration>
             </plugin>
         </plugins>
