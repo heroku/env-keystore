@@ -12,12 +12,16 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import java.io.*;
 import java.math.BigInteger;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -98,15 +102,28 @@ public class BasicKeyStore {
   }
 
   public File storeTemp() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
-    File temp = File.createTempFile("env-keystore", type().toLowerCase());
-    store(temp.toPath());
-    return temp;
+    // Owner-only permissions are only enforced on POSIX filesystems. On non-POSIX
+    // (e.g. Windows) the file is created with the default inherited ACL.
+    if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
+      Path temp = Files.createTempFile("env-keystore", type().toLowerCase(),
+          PosixFilePermissions.asFileAttribute(
+              EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE)));
+      store(temp);
+      return temp.toFile();
+    } else {
+      Path temp = Files.createTempFile("env-keystore", type().toLowerCase());
+      store(temp);
+      return temp.toFile();
+    }
   }
 
   public void asFile(Consumer<File> c) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
     File temp = storeTemp();
-    c.accept(temp);
-    Files.delete(temp.toPath());
+    try {
+      c.accept(temp);
+    } finally {
+      Files.deleteIfExists(temp.toPath());
+    }
   }
 
   protected static java.security.KeyStore createKeyStore(final Reader keyReader, final Reader certReader, final String password)

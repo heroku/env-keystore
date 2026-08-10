@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- Create the temporary keystore file in `BasicKeyStore.storeTemp()` with owner-only permissions on POSIX filesystems. ([#152](https://github.com/heroku/env-keystore/pull/152))
+- Always delete the temporary keystore file in `BasicKeyStore.asFile()`, even when the consumer throws an exception. ([#152](https://github.com/heroku/env-keystore/pull/152))
 
 ## [1.1.13] - 2026-04-20
 
