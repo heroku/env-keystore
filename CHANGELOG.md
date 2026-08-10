@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+
+## [1.1.14] - 2026-08-10
+
 ### Fixed
 
 - Create the temporary keystore file in `BasicKeyStore.storeTemp()` with owner-only permissions on POSIX filesystems. ([#152](https://github.com/heroku/env-keystore/pull/152))
@@ -41,7 +44,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Update release process. ([#61](https://github.com/heroku/env-keystore/pull/61))
 
-[unreleased]: https://github.com/heroku/env-keystore/compare/v1.1.13...HEAD
+[unreleased]: https://github.com/heroku/env-keystore/compare/v1.1.14...HEAD
+[1.1.14]: https://github.com/heroku/env-keystore/compare/v1.1.13...v1.1.14
 [1.1.13]: https://github.com/heroku/env-keystore/compare/v1.1.12...v1.1.13
 [1.1.12]: https://github.com/heroku/env-keystore/compare/v1.1.11...v1.1.12
 [1.1.11]: https://github.com/heroku/env-keystore/compare/v1.1.10...v1.1.11
