@@ -88,7 +88,7 @@ public class BasicKeyStore {
 
   public byte[] toBytes() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    this.store(bos);
+    this.keystore.store(bos, password.toCharArray());
     bos.close();
     return bos.toByteArray();
   }
