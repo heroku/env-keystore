@@ -5,9 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-### Changed
-
-- Wire up JUnit 4 and Surefire so `mvn test` actually runs the test suite. ([#151](https://github.com/heroku/env-keystore/pull/151))
 
 ## [1.1.13] - 2026-04-20
 
