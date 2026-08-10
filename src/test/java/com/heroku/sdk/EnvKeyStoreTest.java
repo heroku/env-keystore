@@ -8,15 +8,24 @@ import javax.net.ssl.X509TrustManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.EnumSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 public class EnvKeyStoreTest {
 
@@ -309,6 +318,49 @@ public class EnvKeyStoreTest {
     assertEquals("KeyStore does not contain 1 entry", 1, eks.keyStore().size());
 
     eks.asFile(f -> assertValidKeyStore(f, eks));
+  }
+
+  @Test
+  public void testStoreTempIsOwnerOnly()
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    assumeTrue(
+        "POSIX file attributes not supported on this filesystem",
+        FileSystems.getDefault().supportedFileAttributeViews().contains("posix"));
+
+    EnvKeyStore eks = new EnvKeyStore(KEY, CERT, PASSWORD);
+    File temp = eks.storeTemp();
+    try {
+      Set<PosixFilePermission> perms = Files.getPosixFilePermissions(temp.toPath());
+      Set<PosixFilePermission> expected =
+          EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
+      assertEquals("Temp keystore permissions", expected, perms);
+    } finally {
+      Files.deleteIfExists(temp.toPath());
+    }
+  }
+
+  @Test
+  public void testAsFileDeletesOnException()
+      throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    EnvKeyStore eks = new EnvKeyStore(KEY, CERT, PASSWORD);
+    AtomicReference<File> captured = new AtomicReference<>();
+    RuntimeException expected = new RuntimeException("boom");
+
+    RuntimeException caught = null;
+    try {
+      eks.asFile(f -> {
+        captured.set(f);
+        throw expected;
+      });
+    } catch (RuntimeException e) {
+      caught = e;
+    }
+
+    assertSame("Expected asFile to propagate the consumer exception", expected, caught);
+    assertNotNull("Consumer was never invoked", captured.get());
+    assertFalse(
+        "Temp keystore was not deleted after consumer threw: " + captured.get(),
+        captured.get().exists());
   }
 
   private void assertValidKeyStore(File f, EnvKeyStore eks) {

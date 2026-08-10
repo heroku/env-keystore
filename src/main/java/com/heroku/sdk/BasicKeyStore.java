@@ -12,12 +12,16 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import java.io.*;
 import java.math.BigInteger;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -84,29 +88,82 @@ public class BasicKeyStore {
 
   public byte[] toBytes() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    this.store(bos);
+    this.keystore.store(bos, password.toCharArray());
     bos.close();
     return bos.toByteArray();
   }
 
+  /**
+   * @deprecated Writing the keystore to disk is out of scope for this library and will be removed
+   * in a subsequent release. Most callers do not need a file at all: use the in-memory
+   * {@link #keyStore()}, or {@link #toBytes()} / {@link #toInputStream()} if bytes are required.
+   * If you truly need a file, implement it in your own code with the permission and cleanup
+   * guarantees appropriate to your environment. Getting this right is filesystem-specific and
+   * security-sensitive: writing a private key to disk with default permissions can expose it to
+   * other local users (CWE-378), so treat this responsibility as yours to own.
+   */
+  @Deprecated
   public void store(OutputStream out) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
     this.keystore.store(out, password.toCharArray());
   }
 
+  /**
+   * @deprecated Writing the keystore to disk is out of scope for this library and will be removed
+   * in a subsequent release. Most callers do not need a file at all: use the in-memory
+   * {@link #keyStore()}, or {@link #toBytes()} / {@link #toInputStream()} if bytes are required.
+   * If you truly need a file, implement it in your own code with the permission and cleanup
+   * guarantees appropriate to your environment. Getting this right is filesystem-specific and
+   * security-sensitive: writing a private key to disk with default permissions can expose it to
+   * other local users (CWE-378), so treat this responsibility as yours to own.
+   */
+  @Deprecated
   public void store(Path path) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
     Files.write(path, toBytes());
   }
 
+  /**
+   * @deprecated Writing the keystore to disk is out of scope for this library and will be removed
+   * in a subsequent release. Most callers do not need a file at all: use the in-memory
+   * {@link #keyStore()}, or {@link #toBytes()} / {@link #toInputStream()} if bytes are required.
+   * If you truly need a file, implement it in your own code with the permission and cleanup
+   * guarantees appropriate to your environment. Getting this right is filesystem-specific and
+   * security-sensitive: writing a private key to disk with default permissions can expose it to
+   * other local users (CWE-378), so treat this responsibility as yours to own.
+   */
+  @Deprecated
   public File storeTemp() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
-    File temp = File.createTempFile("env-keystore", type().toLowerCase());
-    store(temp.toPath());
-    return temp;
+    // Owner-only permissions are only enforced on POSIX filesystems. On non-POSIX
+    // (e.g. Windows) the file is created with the default inherited ACL.
+    if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
+      Path temp = Files.createTempFile("env-keystore", type().toLowerCase(),
+          PosixFilePermissions.asFileAttribute(
+              EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE)));
+      store(temp);
+      return temp.toFile();
+    } else {
+      Path temp = Files.createTempFile("env-keystore", type().toLowerCase());
+      store(temp);
+      return temp.toFile();
+    }
   }
 
+  /**
+   * @deprecated Writing the keystore to disk is out of scope for this library and will be removed
+   * in a subsequent release. Most callers do not need a file at all: use the in-memory
+   * {@link #keyStore()}, or {@link #toBytes()} / {@link #toInputStream()} if bytes are required.
+   * If you truly need a file, implement it in your own code with the permission and cleanup
+   * guarantees appropriate to your environment. Getting this right is filesystem-specific and
+   * security-sensitive: writing a private key to disk with default permissions can expose it to
+   * other local users (CWE-378), so treat this responsibility as yours to own.
+   */
+  @Deprecated
   public void asFile(Consumer<File> c) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
     File temp = storeTemp();
-    c.accept(temp);
-    Files.delete(temp.toPath());
+    try {
+      c.accept(temp);
+    } finally {
+      Files.deleteIfExists(temp.toPath());
+    }
   }
 
   protected static java.security.KeyStore createKeyStore(final Reader keyReader, final Reader certReader, final String password)

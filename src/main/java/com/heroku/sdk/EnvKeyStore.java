@@ -222,18 +222,58 @@ public class EnvKeyStore {
     return basicKeyStore.toBytes();
   }
 
+  /**
+   * @deprecated Writing the keystore to disk is out of scope for this library and will be removed
+   * in a subsequent release. Most callers do not need a file at all: use the in-memory
+   * {@link #keyStore()}, or {@link #toBytes()} / {@link #toInputStream()} if bytes are required.
+   * If you truly need a file, implement it in your own code with the permission and cleanup
+   * guarantees appropriate to your environment. Getting this right is filesystem-specific and
+   * security-sensitive: writing a private key to disk with default permissions can expose it to
+   * other local users (CWE-378), so treat this responsibility as yours to own.
+   */
+  @Deprecated
   public void store(OutputStream out) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
     basicKeyStore.store(out);
   }
 
+  /**
+   * @deprecated Writing the keystore to disk is out of scope for this library and will be removed
+   * in a subsequent release. Most callers do not need a file at all: use the in-memory
+   * {@link #keyStore()}, or {@link #toBytes()} / {@link #toInputStream()} if bytes are required.
+   * If you truly need a file, implement it in your own code with the permission and cleanup
+   * guarantees appropriate to your environment. Getting this right is filesystem-specific and
+   * security-sensitive: writing a private key to disk with default permissions can expose it to
+   * other local users (CWE-378), so treat this responsibility as yours to own.
+   */
+  @Deprecated
   public void store(Path path) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
     basicKeyStore.store(path);
   }
 
+  /**
+   * @deprecated Writing the keystore to disk is out of scope for this library and will be removed
+   * in a subsequent release. Most callers do not need a file at all: use the in-memory
+   * {@link #keyStore()}, or {@link #toBytes()} / {@link #toInputStream()} if bytes are required.
+   * If you truly need a file, implement it in your own code with the permission and cleanup
+   * guarantees appropriate to your environment. Getting this right is filesystem-specific and
+   * security-sensitive: writing a private key to disk with default permissions can expose it to
+   * other local users (CWE-378), so treat this responsibility as yours to own.
+   */
+  @Deprecated
   public File storeTemp() throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
     return basicKeyStore.storeTemp();
   }
 
+  /**
+   * @deprecated Writing the keystore to disk is out of scope for this library and will be removed
+   * in a subsequent release. Most callers do not need a file at all: use the in-memory
+   * {@link #keyStore()}, or {@link #toBytes()} / {@link #toInputStream()} if bytes are required.
+   * If you truly need a file, implement it in your own code with the permission and cleanup
+   * guarantees appropriate to your environment. Getting this right is filesystem-specific and
+   * security-sensitive: writing a private key to disk with default permissions can expose it to
+   * other local users (CWE-378), so treat this responsibility as yours to own.
+   */
+  @Deprecated
   public void asFile(Consumer<File> c) throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
     basicKeyStore.asFile(c);
   }
