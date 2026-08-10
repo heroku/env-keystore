@@ -1,5 +1,7 @@
 package com.heroku.sdk;
 
+import org.junit.Test;
+
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
@@ -10,6 +12,11 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class EnvKeyStoreTest {
 
@@ -214,30 +221,29 @@ public class EnvKeyStoreTest {
 
   private static final String PASSWORD = "password";
 
+  @Test
   public void testTrustStore()
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 
     EnvKeyStore eks = new EnvKeyStore(CERT, "password");
 
-    assert "password".equals(eks.password()) : "Password for trust cert was not set";
-
-    assert eks.keyStore() != null : "TrustStore is null";
-
-    assert eks.keyStore().size() == 1 : "TrustStore does not contain 1 entry (" + eks.keyStore().size() + ")";
+    assertEquals("Password for trust cert was not set", "password", eks.password());
+    assertNotNull("TrustStore is null", eks.keyStore());
+    assertEquals("TrustStore does not contain 1 entry", 1, eks.keyStore().size());
   }
 
+  @Test
   public void testTrustStoreWithMultiple()
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 
     EnvKeyStore eks = new EnvKeyStore(CERT + CERT2, "password");
 
-    assert "password".equals(eks.password()) : "Password for trust cert was not set";
-
-    assert eks.keyStore() != null : "TrustStore is null";
-
-    assert eks.keyStore().size() == 2 : "TrustStore does not contain 2 entries (" + eks.keyStore().size() + ")";
+    assertEquals("Password for trust cert was not set", "password", eks.password());
+    assertNotNull("TrustStore is null", eks.keyStore());
+    assertEquals("TrustStore does not contain 2 entries", 2, eks.keyStore().size());
   }
 
+  @Test
   public void testAddToTrustStore()
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 
@@ -253,74 +259,68 @@ public class EnvKeyStoreTest {
       }
     }
 
-    assert defaultTm != null : "TrustStore not found";
-
-    assert defaultTm.getAcceptedIssuers().length != 0: "TrustStore is empty";
+    assertNotNull("TrustStore not found", defaultTm);
+    assertTrue("TrustStore is empty", defaultTm.getAcceptedIssuers().length != 0);
 
     EnvKeyStore eks = new EnvKeyStore(CERT, "password", defaultTm.getAcceptedIssuers());
 
-    assert eks.keyStore() != null : "TrustStore is null";
-
-    assert eks.keyStore().size() > 1 : "TrustStore only contains 1 entry (" + eks.keyStore().size() + ")";
+    assertNotNull("TrustStore is null", eks.keyStore());
+    assertTrue(
+        "TrustStore only contains 1 entry (" + eks.keyStore().size() + ")",
+        eks.keyStore().size() > 1);
   }
 
+  @Test
   public void testKeyStore()
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 
     EnvKeyStore eks = new EnvKeyStore(KEY, CERT, PASSWORD);
 
-    assert eks.password().equals(PASSWORD) : "Password for key store is incorrect";
+    assertEquals("Password for key store is incorrect", PASSWORD, eks.password());
+    assertNotNull("KeyStore is null", eks.keyStore());
+    assertEquals("KeyStore does not contain 1 entry", 1, eks.keyStore().size());
 
-    assert eks.keyStore() != null : "KeyStore is null";
-
-    assert eks.keyStore().size() == 1 : "KeyStore does not contain 1 entry (" + eks.keyStore().size() + ")";
-
-    eks.asFile(f -> {
-      assertValidKeyStore(f, eks);
-    });
+    eks.asFile(f -> assertValidKeyStore(f, eks));
   }
 
+  @Test
   public void testKeyStoreWithMultiple()
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 
     EnvKeyStore eks = new EnvKeyStore(CERT_CHAIN_KEY, CERT_CHAIN, PASSWORD);
 
-    assert eks.password().equals(PASSWORD) : "Password for key store is incorrect";
-
-    assert eks.keyStore() != null : "KeyStore is null";
-
-    assert eks.keyStore().size() == 1 : "KeyStore does not contain 1 entry (" + eks.keyStore().size() + ")";
-
-    assert eks.keyStore().getCertificateChain("alias").length == 2 :
-        "Certificate chain does not contain 2 entries (" + eks.keyStore().getCertificateChain("alias").length + ")";
+    assertEquals("Password for key store is incorrect", PASSWORD, eks.password());
+    assertNotNull("KeyStore is null", eks.keyStore());
+    assertEquals("KeyStore does not contain 1 entry", 1, eks.keyStore().size());
+    assertEquals(
+        "Certificate chain does not contain 2 entries",
+        2,
+        eks.keyStore().getCertificateChain("alias").length);
   }
 
+  @Test
   public void testKeyStorePkcs8()
       throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 
     EnvKeyStore eks = new EnvKeyStore(KEY_PKCS8, CERT, PASSWORD);
 
-    assert eks.password().equals(PASSWORD) : "Password for key store is incorrect";
+    assertEquals("Password for key store is incorrect", PASSWORD, eks.password());
+    assertNotNull("KeyStore is null", eks.keyStore());
+    assertEquals("KeyStore does not contain 1 entry", 1, eks.keyStore().size());
 
-    assert eks.keyStore() != null : "KeyStore is null";
-
-    assert eks.keyStore().size() == 1 : "KeyStore does not contain 1 entry (" + eks.keyStore().size() + ")";
-
-    eks.asFile(f -> {
-      assertValidKeyStore(f, eks);
-    });
+    eks.asFile(f -> assertValidKeyStore(f, eks));
   }
 
-  public void assertValidKeyStore(File f, EnvKeyStore eks) {
-    assert f.exists() : "Temp KeyStore file does not exist!";
+  private void assertValidKeyStore(File f, EnvKeyStore eks) {
+    assertTrue("Temp KeyStore file does not exist!", f.exists());
 
     try (FileInputStream in = new FileInputStream(f)) {
       KeyStore ks = KeyStore.getInstance(eks.keyStore().getType());
       ks.load(in, eks.password().toCharArray());
 
-      assert ks.size() == 1 : "KeyStore file is the wrong size! (" + ks.size() + ")";
+      assertEquals("KeyStore file is the wrong size!", 1, ks.size());
     } catch (Exception e) {
-      assert false : e.getMessage();
+      fail(e.getMessage());
     }
   }
 }
