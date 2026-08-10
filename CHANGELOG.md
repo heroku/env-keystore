@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Create the temporary keystore file in `BasicKeyStore.storeTemp()` with owner-only permissions on POSIX filesystems. ([#152](https://github.com/heroku/env-keystore/pull/152))
 - Always delete the temporary keystore file in `BasicKeyStore.asFile()`, even when the consumer throws an exception. ([#152](https://github.com/heroku/env-keystore/pull/152))
 
+### Deprecated
+
+- Deprecate all disk-IO methods on `EnvKeyStore` and `BasicKeyStore` (`store(OutputStream)`, `store(Path)`, `storeTemp()`, `asFile(Consumer<File>)`). Writing keystore material to disk is out of scope for this library and will be removed in a subsequent release. Use `toBytes()` or `toInputStream()` and handle I/O in the caller. ([#152](https://github.com/heroku/env-keystore/pull/152))
+
 ## [1.1.13] - 2026-04-20
 
 
