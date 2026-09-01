@@ -6,5 +6,8 @@
 # However, request review from the language owner instead for files that are updated
 # by Dependabot or release automation, to reduce team review request noise.
 CHANGELOG.md @Malax
+.mvn/ @Malax
+mvnw @Malax
+mvnw.cmd @Malax
 pom.xml @Malax
 /.github/workflows/ @Malax
